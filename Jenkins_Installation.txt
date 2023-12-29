@@ -1,0 +1,136 @@
+root@jenkins:~# lsb_release -a
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 20.04.5 LTS
+Release:        20.04
+Codename:       focal
+root@jenkins:~# java -version
+openjdk version "11.0.21" 2023-10-17
+OpenJDK Runtime Environment (build 11.0.21+9-post-Ubuntu-0ubuntu120.04)
+OpenJDK 64-Bit Server VM (build 11.0.21+9-post-Ubuntu-0ubuntu120.04, mixed mode, sharing)
+
+root@jenkins:~# sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+>     https://pkg.jenkins.io/debian/jenkins.io-2023.key
+--2023-12-25 07:10:40--  https://pkg.jenkins.io/debian/jenkins.io-2023.key
+Resolving pkg.jenkins.io (pkg.jenkins.io)... 2a04:4e42:25::645, 151.101.158.133
+Connecting to pkg.jenkins.io (pkg.jenkins.io)|2a04:4e42:25::645|:443... failed: Connection timed out.
+Connecting to pkg.jenkins.io (pkg.jenkins.io)|151.101.158.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3175 (3.1K) [application/pgp-keys]
+Saving to: ‘/usr/share/keyrings/jenkins-keyring.asc’
+
+/usr/share/keyrings/jenkins-keyring.asc   100%[=====================================================================================>]   3.10K  --.-KB/s    in 0.001s
+
+2023-12-25 07:12:50 (4.55 MB/s) - ‘/usr/share/keyrings/jenkins-keyring.asc’ saved [3175/3175]
+
+root@jenkins:~# echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+>     https://pkg.jenkins.io/debian binary/ | sudo tee \
+>     /etc/apt/sources.list.d/jenkins.list > /dev/null
+root@jenkins:~# apt-get update
+Ign:1 https://pkg.jenkins.io/debian binary/ InRelease
+Hit:2 https://pkg.jenkins.io/debian binary/ Release
+Hit:4 http://in.archive.ubuntu.com/ubuntu focal InRelease
+Get:5 http://in.archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+Hit:6 http://in.archive.ubuntu.com/ubuntu focal-backports InRelease
+Hit:7 http://in.archive.ubuntu.com/ubuntu focal-security InRelease
+Fetched 114 kB in 4s (29.5 kB/s)
+Reading package lists... Done
+root@jenkins:~# apt-get install fontconfig
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following package was automatically installed and is no longer required:
+  net-tools
+Use 'apt autoremove' to remove it.
+The following NEW packages will be installed:
+  fontconfig
+0 upgraded, 1 newly installed, 0 to remove and 66 not upgraded.
+Need to get 0 B/171 kB of archives.
+After this operation, 378 kB of additional disk space will be used.
+Selecting previously unselected package fontconfig.
+(Reading database ... 73302 files and directories currently installed.)
+Preparing to unpack .../fontconfig_2.13.1-2ubuntu3_amd64.deb ...
+Unpacking fontconfig (2.13.1-2ubuntu3) ...
+Setting up fontconfig (2.13.1-2ubuntu3) ...
+Regenerating fonts cache... done.
+Processing triggers for man-db (2.9.1-1) ...
+root@jenkins:~# java -version
+openjdk version "11.0.21" 2023-10-17
+OpenJDK Runtime Environment (build 11.0.21+9-post-Ubuntu-0ubuntu120.04)
+OpenJDK 64-Bit Server VM (build 11.0.21+9-post-Ubuntu-0ubuntu120.04, mixed mode, sharing)
+root@jenkins:~# apt-get install jenkins
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following NEW packages will be installed:
+  jenkins
+0 upgraded, 1 newly installed, 0 to remove and 66 not upgraded.
+Need to get 0 B/86.1 MB of archives.
+After this operation, 86.8 MB of additional disk space will be used.
+Selecting previously unselected package jenkins.
+(Reading database ... 73332 files and directories currently installed.)
+Preparing to unpack .../archives/jenkins_2.437_all.deb ...
+Unpacking jenkins (2.437) ...
+Setting up jenkins (2.437) ...
+Job for jenkins.service failed because a timeout was exceeded.
+See "systemctl status jenkins.service" and "journalctl -xe" for details.
+invoke-rc.d: initscript jenkins, action "start" failed.
+? jenkins.service - Jenkins Continuous Integration Server
+     Loaded: loaded (/lib/systemd/system/jenkins.service; enabled; vendor preset: enabled)
+     Active: activating (auto-restart) (Result: timeout) since Mon 2023-12-25 07:15:42 UTC; 60ms ago
+    Process: 9434 ExecStart=/usr/bin/jenkins (code=exited, status=143)
+   Main PID: 9434 (code=exited, status=143)
+     Status: "Jenkins stopped"
+dpkg: error processing package jenkins (--configure):
+ installed jenkins package post-installation script subprocess returned error exit status 1
+Processing triggers for systemd (245.4-4ubuntu3.20) ...
+Errors were encountered while processing:
+ jenkins
+E: Sub-process /usr/bin/dpkg returned an error code (1)
+root@jenkins:~# cd /usr/bin/dpkg
+-bash: cd: /usr/bin/dpkg: Not a directory
+root@jenkins:~# vi /usr/bin/dpkg
+root@jenkins:~# systemctl status jenkins.service
+? jenkins.service - Jenkins Continuous Integration Server
+     Loaded: loaded (/lib/systemd/system/jenkins.service; enabled; vendor preset: enabled)
+     Active: activating (start) since Mon 2023-12-25 07:17:18 UTC; 55s ago
+   Main PID: 9796 (java)
+      Tasks: 42 (limit: 2257)
+     Memory: 224.9M
+     CGroup: /system.slice/jenkins.service
+             +-9796 /usr/bin/java -Djava.awt.headless=true -jar /usr/share/java/jenkins.war --webroot=/var/cache/jenkins/war --httpPort=8080
+
+Dec 25 07:17:51 jenkins jenkins[9796]: *************************************************************
+Dec 25 07:17:51 jenkins jenkins[9796]: *************************************************************
+Dec 25 07:17:51 jenkins jenkins[9796]: *************************************************************
+Dec 25 07:17:51 jenkins jenkins[9796]: Jenkins initial setup is required. An admin user has been created and a password generated.
+Dec 25 07:17:51 jenkins jenkins[9796]: Please use the following password to proceed to installation:
+Dec 25 07:17:51 jenkins jenkins[9796]: 2f5d045db28c4b8a93eeef41e113c410
+Dec 25 07:17:51 jenkins jenkins[9796]: This may also be found at: /var/lib/jenkins/secrets/initialAdminPassword
+Dec 25 07:17:51 jenkins jenkins[9796]: *************************************************************
+Dec 25 07:17:51 jenkins jenkins[9796]: *************************************************************
+Dec 25 07:17:51 jenkins jenkins[9796]: *************************************************************
+root@jenkins:~# systemctl status jenkins
+? jenkins.service - Jenkins Continuous Integration Server
+     Loaded: loaded (/lib/systemd/system/jenkins.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2023-12-25 07:31:12 UTC; 3min 22s ago
+   Main PID: 10701 (java)
+      Tasks: 39 (limit: 2257)
+     Memory: 155.1M
+     CGroup: /system.slice/jenkins.service
+             +-10701 /usr/bin/java -Djava.awt.headless=true -jar /usr/share/java/jenkins.war --webroot=/var/cache/jenkins/war --httpPort=8080
+
+Dec 25 07:31:12 jenkins jenkins[10701]:         at jenkins.security.ImpersonatingExecutorService$1.run(ImpersonatingExecutorService.java:68)
+Dec 25 07:31:12 jenkins jenkins[10701]:         at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+Dec 25 07:31:12 jenkins jenkins[10701]:         at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+Dec 25 07:31:12 jenkins jenkins[10701]:         at java.base/java.lang.Thread.run(Thread.java:829)
+Dec 25 07:31:12 jenkins jenkins[10701]: 2023-12-25 07:31:12.266+0000 [id=46]        INFO        hudson.util.Retrier#start: Calling the listener of the allowed exceptio>
+Dec 25 07:31:12 jenkins jenkins[10701]: 2023-12-25 07:31:12.288+0000 [id=30]        INFO        jenkins.InitReactorRunner$1#onAttained: Completed initialization
+Dec 25 07:31:12 jenkins jenkins[10701]: 2023-12-25 07:31:12.341+0000 [id=46]        INFO        hudson.util.Retrier#start: Attempted the action check updates server fo>
+Dec 25 07:31:12 jenkins jenkins[10701]: 2023-12-25 07:31:12.343+0000 [id=46]        SEVERE        hudson.PluginManager#doCheckUpdatesServer: Error checking update site>
+Dec 25 07:31:12 jenkins jenkins[10701]: 2023-12-25 07:31:12.417+0000 [id=22]        INFO        hudson.lifecycle.Lifecycle#onReady: Jenkins is fully up and running
+Dec 25 07:31:12 jenkins systemd[1]: Started Jenkins Continuous Integration Server.
+
+
+
+
